@@ -4,6 +4,9 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { QueryProvider } from "@/providers/queryProvider";
 import { SheetProvider } from "@/providers/SheetProvider";
 
+//components
+import { Toaster } from "@/components/ui/sonner";
+
 //css
 import "./globals.css";
 
@@ -28,6 +31,7 @@ export default function RootLayout({
         <body className={inter.className}>
           <QueryProvider>
             <SheetProvider />
+            <Toaster />
             {children}
           </QueryProvider>
         </body>

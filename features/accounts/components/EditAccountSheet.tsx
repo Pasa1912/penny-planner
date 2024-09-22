@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { useCallback } from "react";
 import { insertAccountSchema } from "@/db/schema";
-import { useNewAccount } from "../hooks/useNewAccount";
+import { useOpenAccount } from "../hooks/useOpenAccount";
 import { AccountForm } from "@/features/accounts/components/AccountForm";
-import { useCreateAccount } from "@/features/accounts/api/useCreateAccount";
+import { useGetAccount } from "@/features/accounts/api/useGetAccount";
+import { useEditAccount } from "@/features/accounts/api/useEditAccount";
 
 import {
   Sheet,
@@ -16,28 +17,34 @@ import {
 type FormValues = z.input<typeof formSchema>;
 const formSchema = insertAccountSchema.pick({ name: true });
 
-export const NewAccountSheet = () => {
-  const { isOpen, onClose } = useNewAccount();
-  const createAccountMutation = useCreateAccount();
+export const EditAccountSheet = () => {
+  const { isOpen, onClose, id } = useOpenAccount();
+  const { data: account, isLoading } = useGetAccount(id);
+  const editAccountMutation = useEditAccount(id);
+
+  const defaultValues = {
+    name: account ? account.name : "",
+  };
 
   const handleSubmit = useCallback(
     (values: FormValues) =>
-      createAccountMutation.mutate(values, { onSuccess: onClose }),
-    [createAccountMutation, onClose]
+      editAccountMutation.mutate(values, { onSuccess: onClose }),
+    [editAccountMutation, onClose]
   );
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent className="space-y-4">
         <SheetHeader>
-          <SheetTitle>New Account</SheetTitle>
+          <SheetTitle>Edit Account</SheetTitle>
           <SheetDescription>
-            Create a new account to track your transaction
+            Edit account to track your transaction
           </SheetDescription>
         </SheetHeader>
         <AccountForm
           onSubmit={handleSubmit}
-          disabled={createAccountMutation.isPending}
+          disabled={editAccountMutation.isPending}
+          defaultValues={defaultValues}
         />
       </SheetContent>
     </Sheet>
