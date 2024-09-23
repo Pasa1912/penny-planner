@@ -5,35 +5,29 @@ import { client } from "@/lib/hono";
 import { toast } from "sonner";
 
 type ResponseType = InferResponseType<
-  (typeof client.api.accounts)[":id"]["$patch"]
+  (typeof client.api.accounts)["bulk-delete"]["$post"]
 >;
 type RequestType = InferRequestType<
-  (typeof client.api.accounts)[":id"]["$patch"]
+  (typeof client.api.accounts)["bulk-delete"]["$post"]
 >["json"];
 
-export const useEditAccount = (id?: string) => {
+export const useDeleteAccounts = () => {
   const queryClient = useQueryClient();
+  const mutationFn = useCallback(async (json: RequestType) => {
+    const response = await client.api.accounts["bulk-delete"]["$post"]({
+      json,
+    });
 
-  const mutationFn = useCallback(
-    async (json: RequestType) => {
-      const response = await client.api.accounts[":id"].$patch({
-        json,
-        param: { id },
-      });
-
-      return await response.json();
-    },
-    [id]
-  );
+    return await response.json();
+  }, []);
 
   const onSuccess = useCallback(() => {
-    toast.success("Account Updated");
-    queryClient.invalidateQueries({ queryKey: ["account", { id }] });
+    toast.success("Account(s) Deleted");
     queryClient.invalidateQueries({ queryKey: ["accounts"] });
-  }, [queryClient, id]);
+  }, [queryClient]);
 
   const onError = useCallback(() => {
-    toast.error("Failed to edit account!");
+    toast.error("Failed to delete account(s)!");
   }, []);
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
