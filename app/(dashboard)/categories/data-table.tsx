@@ -47,8 +47,8 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
   const [ConfirmationDialog, confirm] = useConfirm(
-    "Delete Account(s)",
-    "Are you sure you want to delete the selected account(s)?"
+    "Delete Category(s)",
+    "Are you sure you want to delete the selected category(s)?"
   );
 
   const table = useReactTable({

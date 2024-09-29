@@ -10,7 +10,7 @@ import { db } from "@/db/drizzle";
 import { categories, insertCategorySchema } from "@/db/schema";
 
 const app = new Hono()
-  .get("/", async (c) => {
+  .get("/", clerkMiddleware(), async (c) => {
     const auth = getAuth(c);
 
     if (!auth?.userId) {

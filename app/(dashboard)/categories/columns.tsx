@@ -9,9 +9,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Actions } from "./Actions";
 
 export type ResponseType = InferResponseType<
-  typeof client.api.accounts.$get,
+  typeof client.api.categories.$get,
   200
->["accounts"][0];
+>["categories"][0];
 
 export const columns: ColumnDef<ResponseType>[] = [
   {

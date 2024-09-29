@@ -60,7 +60,7 @@ const AccountsPage = () => {
           <DataTable
             columns={columns}
             data={data ?? []}
-            filterKey="email"
+            filterKey="name"
             onDelete={handleDelete}
             disabled={isLoading || deleteAccountsMutation.isPending}
           />

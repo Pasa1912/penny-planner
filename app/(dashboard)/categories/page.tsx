@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { useNewAccount } from "@/features/accounts/hooks/useNewAccount";
-import { useGetAccounts } from "@/features/accounts/api/useGetAccounts";
-import { useDeleteAccounts } from "@/features/accounts/api/useDeleteAccounts";
+import { useNewCategory } from "@/features/categories/hooks/useNewCategory";
+import { useGetCategories } from "@/features/categories/api/useGetCategories";
+import { useDeleteCategories } from "@/features/categories/api/useDeleteCategories";
 
 import type { Row } from "@tanstack/react-table";
 import { Loader2, Plus } from "lucide-react";
@@ -29,17 +29,17 @@ const Tombstone = () => (
   </div>
 );
 
-const AccountsPage = () => {
-  const { onOpen } = useNewAccount();
-  const { data, isLoading } = useGetAccounts();
-  const deleteAccountsMutation = useDeleteAccounts();
+const CategoriesPage = () => {
+  const { onOpen } = useNewCategory();
+  const { data, isLoading } = useGetCategories();
+  const deleteCategoriesMutation = useDeleteCategories();
 
   const handleDelete = useCallback(
     (rows: Row<{ id: string; name: string }>[]) => {
       const ids = rows.map((r) => r.original.id);
-      deleteAccountsMutation.mutate({ ids });
+      deleteCategoriesMutation.mutate({ ids });
     },
-    [deleteAccountsMutation]
+    [deleteCategoriesMutation]
   );
 
   if (isLoading) {
@@ -50,7 +50,9 @@ const AccountsPage = () => {
     <div className="max-w-screen-2xl mx-auto w-full pb-10 -mt-24">
       <Card className="border-none drop-shadow-sm">
         <CardHeader className="gap-y-2 lg:flex-row lg:items-center lg:justify-between">
-          <CardTitle className="text-xl line-clamp-1">Accounts Page</CardTitle>
+          <CardTitle className="text-xl line-clamp-1">
+            Categories Page
+          </CardTitle>
           <Button onClick={onOpen} size="sm">
             <Plus className="size-4 mr-2" />
             Add New
@@ -60,9 +62,9 @@ const AccountsPage = () => {
           <DataTable
             columns={columns}
             data={data ?? []}
-            filterKey="email"
+            filterKey="name"
             onDelete={handleDelete}
-            disabled={isLoading || deleteAccountsMutation.isPending}
+            disabled={isLoading || deleteCategoriesMutation.isPending}
           />
         </CardContent>
       </Card>
@@ -70,4 +72,4 @@ const AccountsPage = () => {
   );
 };
 
-export default AccountsPage;
+export default CategoriesPage;
