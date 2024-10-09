@@ -22,6 +22,7 @@ export const useDeleteAccount = (id?: string) => {
   const onSuccess = useCallback(() => {
     toast.success("Account Deleted");
     queryClient.invalidateQueries({ queryKey: ["accounts"] });
+    queryClient.invalidateQueries({ queryKey: ["transactions"] });
   }, [queryClient]);
 
   const onError = useCallback(() => {

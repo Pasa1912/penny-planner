@@ -97,11 +97,11 @@ const app = new Hono()
         .select({
           id: transactions.id,
           date: transactions.date,
-          categoryId: categories.id,
+          categoryId: transactions.categoryId,
           payee: transactions.payee,
           amount: transactions.amount,
           notes: transactions.notes,
-          accountId: accounts.id,
+          accountId: transactions.accountId,
         })
         .from(transactions)
         .innerJoin(accounts, eq(accounts.id, transactions.accountId))
@@ -137,6 +137,35 @@ const app = new Hono()
           id: v4(),
           ...values,
         })
+        .returning({ id: transactions.id });
+
+      return c.json({ data });
+    }
+  )
+  .post(
+    "/bulk-create",
+    clerkMiddleware(),
+    zValidator(
+      "json",
+      z.array(
+        insertTransactionSchema.omit({
+          id: true,
+        })
+      )
+    ),
+    async (c) => {
+      const auth = getAuth(c);
+      const values = c.req.valid("json");
+
+      if (!auth?.userId) {
+        throw new HTTPException(401, {
+          res: c.json({ error: "Unauthorized user" }, 401),
+        });
+      }
+
+      const data = await db
+        .insert(transactions)
+        .values(values.map((value) => ({ id: v4(), ...value })))
         .returning();
 
       return c.json({ data });

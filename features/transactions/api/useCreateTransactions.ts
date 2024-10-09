@@ -5,36 +5,29 @@ import { client } from "@/lib/hono";
 import { toast } from "sonner";
 
 type ResponseType = InferResponseType<
-  (typeof client.api.categories)[":id"]["$patch"]
+  (typeof client.api.transactions)["bulk-create"]["$post"]
 >;
 type RequestType = InferRequestType<
-  (typeof client.api.categories)[":id"]["$patch"]
+  (typeof client.api.transactions)["bulk-create"]["$post"]
 >["json"];
 
-export const useEditCategory = (id?: string) => {
+export const useCreateTransactions = () => {
   const queryClient = useQueryClient();
+  const mutationFn = useCallback(async (json: RequestType) => {
+    const response = await client.api.transactions["bulk-create"]["$post"]({
+      json,
+    });
 
-  const mutationFn = useCallback(
-    async (json: RequestType) => {
-      const response = await client.api.categories[":id"].$patch({
-        json,
-        param: { id },
-      });
-
-      return await response.json();
-    },
-    [id]
-  );
+    return await response.json();
+  }, []);
 
   const onSuccess = useCallback(() => {
-    toast.success("Category Updated");
-    queryClient.invalidateQueries({ queryKey: ["category", { id }] });
-    queryClient.invalidateQueries({ queryKey: ["categories"] });
+    toast.success("Transaction(s) Created");
     queryClient.invalidateQueries({ queryKey: ["transactions"] });
-  }, [queryClient, id]);
+  }, [queryClient]);
 
   const onError = useCallback(() => {
-    toast.error("Failed to edit category!");
+    toast.error("Failed to create transaction(s)!");
   }, []);
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
