@@ -15,7 +15,7 @@ const fetchFinancialData = ({
   endDate,
   accountId,
 }: {
-  userId: typeof accounts.userId;
+  userId: string;
   startDate: Date;
   endDate: Date;
   accountId?: string;
@@ -80,14 +80,14 @@ const app = new Hono().get(
       lastPeriodEnd = subDays(endDate, periodLength);
 
     const [currentPeriod] = await fetchFinancialData({
-      userId: accounts.userId,
+      userId: auth.userId,
       startDate,
       endDate,
       accountId,
     });
 
     const [lastPeriod] = await fetchFinancialData({
-      userId: accounts.userId,
+      userId: auth.userId,
       startDate: lastPeriodStart,
       endDate: lastPeriodEnd,
       accountId,

@@ -21,7 +21,9 @@ const app = new Hono()
 
     const data = await db
       .select({ id: accounts.id, name: accounts.name })
-      .from(accounts);
+      .from(accounts)
+      .where(eq(accounts.userId, auth.userId));
+
     return c.json({ accounts: data });
   })
   .get(
