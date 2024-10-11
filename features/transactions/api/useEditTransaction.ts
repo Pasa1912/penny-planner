@@ -30,6 +30,7 @@ export const useEditTransaction = (id?: string) => {
     toast.success("Transaction Updated");
     queryClient.invalidateQueries({ queryKey: ["transaction", { id }] });
     queryClient.invalidateQueries({ queryKey: ["transactions"] });
+    queryClient.invalidateQueries({ queryKey: ["summary"] });
   }, [queryClient, id]);
 
   const onError = useCallback(() => {

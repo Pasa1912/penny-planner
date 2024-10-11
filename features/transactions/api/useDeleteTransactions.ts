@@ -24,6 +24,7 @@ export const useDeleteTransactions = () => {
   const onSuccess = useCallback(() => {
     toast.success("Transaction(s) Deleted");
     queryClient.invalidateQueries({ queryKey: ["transactions"] });
+    queryClient.invalidateQueries({ queryKey: ["summary"] });
   }, [queryClient]);
 
   const onError = useCallback(() => {

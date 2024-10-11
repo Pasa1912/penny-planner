@@ -20,6 +20,7 @@ export const useCreateTransaction = () => {
   const onSuccess = useCallback(() => {
     toast.success("Transaction Created");
     queryClient.invalidateQueries({ queryKey: ["transactions"] });
+    queryClient.invalidateQueries({ queryKey: ["summary"] });
   }, [queryClient]);
 
   const onError = useCallback(() => {
